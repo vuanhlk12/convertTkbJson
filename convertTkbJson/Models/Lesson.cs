@@ -14,7 +14,6 @@ namespace convertTkbJson.Controller
         public string Start { get; set; }
         public string End { get; set; }
         public string Title { get; set; }
-        public string Note { get; set; }
-
+        public string Teacher { get; set; }
     }
 }
