@@ -16,7 +16,7 @@ namespace convertTkbJson.Controller
             Lessons = new List<List<Lesson>>();
         }
         public string Name { get; set; }
-        public string ClassroomNumber { get; set; }
+        public string Room { get; set; }
         public List<List<Lesson>> Lessons { get; set; }
     }
 }
