@@ -85,7 +85,7 @@ namespace convertTkbJson.Controller
                     classrooms.Add(classroom);
                 }
 
-                for (int i = 67; i<131; i++)
+                for (int i = 67; i < 131; i++)
                 {
                     if (sheet.Cells[2, i].Value == null) continue;
 
@@ -97,7 +97,7 @@ namespace convertTkbJson.Controller
                     {
                         List<Lesson> lessons = new List<Lesson>();
 
-                        for (int j = 0; j < 5; j+=2)
+                        for (int j = 0; j < 5; j += 2)
                         {
                             (string start, string end) = getAfternoon(j);
                             string Title = sheet.Cells[k + j, i].Value?.ToString() ?? "";
@@ -119,6 +119,37 @@ namespace convertTkbJson.Controller
 
             string json2 = JsonConvert.SerializeObject(afternoon, serializerSeetings);
             File.WriteAllText($"{FolderPath}/{DateTimeOffset.Now.ToUnixTimeSeconds()}_afternoon.json", json2);
+        }
+
+        public void ReadMissionsExcelFile(string filePath)
+        {
+            FileInfo file = new FileInfo(filePath);
+            if (!file.Exists) throw new Exception("Excel file is not exist.");
+            if (Path.GetExtension(filePath) != ".xlsx") throw new Exception("Config file had to .xlsx file");
+            List<Mission> missions = new List<Mission>();
+
+            using (ExcelPackage package = new ExcelPackage(file))
+            {
+                ExcelWorksheet sheet = package.Workbook.Worksheets["Missions"];
+                if (sheet == null) throw new Exception($"Sheet {"Missions"} is not exist.");
+
+                for (int i = 2; !string.IsNullOrEmpty((string)sheet.Cells[i, 1].Value); i++)
+                {
+                    var Key = sheet.Cells[i, 1].Value?.ToString() ?? "";
+                    var Title = sheet.Cells[i, 2].Value?.ToString() ?? "";
+                    var Body = sheet.Cells[i, 3].Value?.ToString() ?? "";
+                    var Point = sheet.Cells[i, 4].Value?.ToString() ?? "";
+                    missions.Add(new Mission() { Key = Key, Title = Title, Body = Body, Point = Point });
+                }
+
+            }
+
+            var serializerSeetings = new JsonSerializerSettings();
+            serializerSeetings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+
+            string json = JsonConvert.SerializeObject(missions, serializerSeetings);
+            File.WriteAllText($"{FolderPath}/{DateTimeOffset.Now.ToUnixTimeSeconds()}_missions.json", json);
+
         }
     }
 }

@@ -36,5 +36,24 @@ namespace convertTkbJson
                 }
             }
         }
+
+        private void openMissionButton_Click(object sender, EventArgs e)
+        {
+            fbdSource.RootFolder = Environment.SpecialFolder.MyComputer;
+            if (fbdSource.ShowDialog() == DialogResult.OK)
+            {
+                if (!string.IsNullOrEmpty(fbdSource.SelectedPath))
+                {
+                    ReadFile readExcelFile = new ReadFile();
+                    readExcelFile.FolderPath = fbdSource.SelectedPath;
+                    readExcelFile.SearchPattern = "*.xlsx";
+                    List<string> filePaths = readExcelFile.GetAllFile().ToList();
+                    foreach (string filePath in filePaths)
+                    {
+                        readExcelFile.ReadMissionsExcelFile(filePath);
+                    }
+                }
+            }
+        }
     }
 }
